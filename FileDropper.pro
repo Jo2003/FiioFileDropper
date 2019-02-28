@@ -27,11 +27,11 @@ CONFIG += c++11
 SOURCES += \
         main.cpp \
         filedropper.cpp \
-    qfiledropbrowser.cpp
+        qjsonmodel.cpp
 
 HEADERS += \
         filedropper.h \
-    qfiledropbrowser.h
+        qjsonmodel.h
 
 FORMS += \
         filedropper.ui
