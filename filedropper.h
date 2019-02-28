@@ -18,12 +18,12 @@ public:
 
 private slots:
     void updateStrings();
-
     void on_pushRoot_clicked();
-
     void on_pushPause_clicked();
-
     void on_pushSave_clicked();
+    void lengthUpdated(const QString& s);
+    void songUpdated(const QString& s);
+    void on_pushClear_clicked();
 
 private:
     Ui::FileDropper *ui;

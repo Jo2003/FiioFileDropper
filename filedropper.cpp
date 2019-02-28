@@ -10,6 +10,8 @@ FileDropper::FileDropper(QWidget *parent) :
 {
     ui->setupUi(this);
     connect(ui->textBrowser, &QFileDropBrowser::updateStrings, this, &FileDropper::updateStrings);
+    connect(ui->textBrowser, &QFileDropBrowser::updateLength, this, &FileDropper::lengthUpdated);
+    connect(ui->textBrowser, &QFileDropBrowser::updateTitle, this, &FileDropper::songUpdated);
 
     QSettings set;
     ui->lineRoot->setText(set.value("root_folder").toString());
@@ -67,4 +69,25 @@ void FileDropper::on_pushSave_clicked()
             toSave.write(ui->textBrowser->toPlainText().toUtf8());
         }
     }
+}
+
+void FileDropper::lengthUpdated(const QString &s)
+{
+    ui->labLength->clear();
+    ui->labLength->setText(s);
+}
+
+void FileDropper::songUpdated(const QString &s)
+{
+    ui->labSong->clear();
+    ui->labSong->setText(s);
+}
+
+void FileDropper::on_pushClear_clicked()
+{
+    ui->textBrowser->clear();
+    ui->textBrowser->resetTime();
+    ui->labLength->clear();
+    ui->labLength->setText("0:00:00");
+    ui->labSong->clear();
 }

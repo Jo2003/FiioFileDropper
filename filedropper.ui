@@ -14,7 +14,7 @@
    <string>FiiO File Dropper</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0" colspan="3">
+   <item row="0" column="0" colspan="6">
     <widget class="QFileDropBrowser" name="textBrowser">
      <property name="readOnly">
       <bool>true</bool>
@@ -22,19 +22,59 @@
     </widget>
    </item>
    <item row="1" column="0">
-    <widget class="QLabel" name="label">
+    <widget class="QLabel" name="label_4">
      <property name="text">
-      <string>Pause Audio:</string>
+      <string>Song:</string>
      </property>
     </widget>
    </item>
    <item row="1" column="1">
-    <widget class="QLineEdit" name="linePauseAudio"/>
+    <widget class="QLabel" name="labSong">
+     <property name="frameShape">
+      <enum>QFrame::Panel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Sunken</enum>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
    </item>
    <item row="1" column="2">
-    <widget class="QPushButton" name="pushPause">
+    <widget class="QLabel" name="label_3">
      <property name="text">
-      <string>Get File</string>
+      <string>Compilation Time:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="3">
+    <widget class="QLabel" name="labLength">
+     <property name="frameShape">
+      <enum>QFrame::Panel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Sunken</enum>
+     </property>
+     <property name="text">
+      <string>0:00:00</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="4">
+    <widget class="QPushButton" name="pushClear">
+     <property name="text">
+      <string>Clear</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="5">
+    <widget class="QPushButton" name="pushSave">
+     <property name="text">
+      <string>Save</string>
      </property>
     </widget>
    </item>
@@ -45,66 +85,39 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="1">
+   <item row="2" column="1" colspan="4">
     <widget class="QLineEdit" name="lineRoot"/>
    </item>
-   <item row="2" column="2">
+   <item row="2" column="5">
     <widget class="QPushButton" name="pushRoot">
      <property name="text">
       <string>Get Folder</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="1">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QPushButton" name="pushButton_2">
-       <property name="text">
-        <string>Quit</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer_2">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pushButton">
-       <property name="text">
-        <string>Clear</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pushSave">
-       <property name="text">
-        <string>Save</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+   <item row="3" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Pause Audio:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1" colspan="4">
+    <widget class="QLineEdit" name="linePauseAudio"/>
+   </item>
+   <item row="3" column="5">
+    <widget class="QPushButton" name="pushPause">
+     <property name="text">
+      <string>Get File</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="5">
+    <widget class="QPushButton" name="pushButton_2">
+     <property name="text">
+      <string>Quit</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
@@ -125,28 +138,12 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>136</x>
-     <y>533</y>
+     <x>784</x>
+     <y>546</y>
     </hint>
     <hint type="destinationlabel">
      <x>48</x>
      <y>530</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>pushButton</sender>
-   <signal>clicked()</signal>
-   <receiver>textBrowser</receiver>
-   <slot>clear()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>371</x>
-     <y>534</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>330</x>
-     <y>309</y>
     </hint>
    </hints>
   </connection>
