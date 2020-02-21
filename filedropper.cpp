@@ -6,6 +6,7 @@
 #include <QMimeData>
 #include <taglib/taglib.h>
 #include <taglib/fileref.h>
+#include <taglib/mpegfile.h>
 
 FileDropper::FileDropper(QWidget *parent) :
     QDialog(parent),
@@ -16,7 +17,6 @@ FileDropper::FileDropper(QWidget *parent) :
     QSettings set;
     ui->lineRoot->setText(set.value("root_folder").toString());
     ui->linePauseAudio->setText(set.value("pause_file").toString());
-    mLength = QTime(0, 0);
     ui->treeView->setModel(&mModel);
     setAcceptDrops(true);
 }
@@ -110,12 +110,9 @@ void FileDropper::dropEvent(QDropEvent *event)
         {
             if (mediaFileInfo(a, mediaInfo) == 0)
             {
-                mLength = mLength.addSecs(mediaInfo.value("length").toInt());
                 ui->labLength->clear();
-                ui->labLength->setText(mLength.toString("h:mm:ss"));
 
-                mPlayList.insert(QString("%1. %2").arg(mPlayList.count() + 1, 3, 10, QChar('0'))
-                                 .arg(mediaInfo.value("title").toString()), mediaInfo);
+                mPlayList.insert(QString("%1").arg(mPlayList.count() + 1, 3, 10, QChar('0')), mediaInfo);
 
                 QJsonDocument jdock(mPlayList);
 
@@ -123,18 +120,13 @@ void FileDropper::dropEvent(QDropEvent *event)
                 ui->treeView->expandAll();
                 ui->treeView->scrollToBottom();
 
-                if (!ui->linePauseAudio->text().isEmpty() && (mediaFileInfo(ui->linePauseAudio->text(), mediaInfo) == 0))
-                {
-                    mLength = mLength.addSecs(mediaInfo.value("length").toInt());
-                    ui->labLength->clear();
-                    ui->labLength->setText(mLength.toString("h:mm:ss"));
-                }
+                countTime();
             }
         }
     }
 }
 
-QString FileDropper::fixFileUrl(const QUrl &in)
+QString FileDropper::fixFileUrl(const QUrl &in) const
 {
     QString ret = QUrl::fromPercentEncoding(in.toString().toUtf8());
 
@@ -169,4 +161,156 @@ int FileDropper::mediaFileInfo(const QUrl &in, FileDropper::MediaInfo_t &mediaIn
     }
 
     return ret;
+}
+
+void FileDropper::reCreateTitleIndex()
+{
+    QJsonValue mediaInfo;
+    int i = 0;
+    QString title;
+    for (const auto& k : mPlayList.keys())
+    {
+        // cache media info
+        mediaInfo = mPlayList.take(k);
+
+        title = QString("%1").arg(++i, 3, 10, QChar('0'));
+
+        mPlayList.insert(title, mediaInfo);
+    }
+}
+
+void FileDropper::countTime()
+{
+    MediaInfo_t mediaInfo;
+    QTime length = QTime(0, 0);
+
+    if (!ui->linePauseAudio->text().isEmpty() && (mediaFileInfo(ui->linePauseAudio->text(), mediaInfo) == 0))
+    {
+        length = length.addSecs((mPlayList.count() - 1) * mediaInfo.value("length").toInt());
+    }
+
+    for (const auto& t : mPlayList)
+    {
+        length = length.addSecs(t.toObject()["length"].toInt());
+    }
+
+    ui->labLength->clear();
+    ui->labLength->setText(length.toString("h:mm:ss"));
+
+}
+
+void FileDropper::on_pushItemDelete_clicked()
+{
+    QModelIndex idx = ui->treeView->currentIndex();
+
+    if (idx.isValid())
+    {
+        if (idx.parent().isValid())
+        {
+            idx = idx.parent();
+        }
+        mPlayList.remove(idx.data().toString());
+        reCreateTitleIndex();
+
+        QJsonDocument jdock(mPlayList);
+
+        mModel.loadJson(jdock.toJson());
+        ui->treeView->expandAll();
+        ui->treeView->scrollToBottom();
+
+        countTime();
+    }
+}
+
+void FileDropper::on_pushItemUp_clicked()
+{
+    int pos = 0, i = 0;
+    QModelIndex idx = ui->treeView->currentIndex();
+
+    if (idx.isValid())
+    {
+        if (idx.parent().isValid())
+        {
+            idx = idx.parent();
+        }
+
+        pos = idx.data().toString().toInt();
+
+        if ((mPlayList.count() > 1) && (pos != 1))
+        {
+            QJsonObject tmpList;
+            QJsonValue  toMove = mPlayList.take(idx.data().toString());
+
+            // new position
+            pos --;
+
+            for (const auto& k : mPlayList.keys())
+            {
+                i ++;
+
+                if (i == pos)
+                {
+                    tmpList.insert(QString("%1").arg(i, 3, 10, QChar('0')), toMove);
+                    i++;
+                }
+
+                tmpList.insert(QString("%1").arg(i, 3, 10, QChar('0')), mPlayList.value(k));
+            }
+
+            mPlayList = tmpList;
+
+            /////////////////////////////////
+            QJsonDocument jdock(mPlayList);
+            mModel.loadJson(jdock.toJson());
+            ui->treeView->expandAll();
+            ui->treeView->scrollToBottom();
+            countTime();
+        }
+    }
+}
+
+void FileDropper::on_pushItemDown_clicked()
+{
+    int pos = 0, i = 0;
+    QModelIndex idx = ui->treeView->currentIndex();
+
+    if (idx.isValid())
+    {
+        if (idx.parent().isValid())
+        {
+            idx = idx.parent();
+        }
+
+        pos = idx.data().toString().toInt();
+
+        if ((mPlayList.count() > 1) && (pos < mPlayList.count()))
+        {
+            QJsonObject tmpList;
+            QJsonValue  toMove = mPlayList.take(idx.data().toString());
+
+            // new position
+            pos ++;
+
+            for (const auto& k : mPlayList.keys())
+            {
+                i ++;
+                tmpList.insert(QString("%1").arg(i, 3, 10, QChar('0')), mPlayList.value(k));
+
+                if ((i + 1) == pos)
+                {
+                    i++;
+                    tmpList.insert(QString("%1").arg(i, 3, 10, QChar('0')), toMove);
+                }
+            }
+
+            mPlayList = tmpList;
+
+            /////////////////////////////////
+            QJsonDocument jdock(mPlayList);
+            mModel.loadJson(jdock.toJson());
+            ui->treeView->expandAll();
+            ui->treeView->scrollToBottom();
+            countTime();
+        }
+    }
 }

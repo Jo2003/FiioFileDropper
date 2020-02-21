@@ -6,67 +6,22 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>794</width>
-    <height>556</height>
+    <width>899</width>
+    <height>620</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>FiiO File Dropper</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0" colspan="6">
-    <widget class="QTreeView" name="treeView">
-     <attribute name="headerVisible">
-      <bool>true</bool>
-     </attribute>
-    </widget>
-   </item>
-   <item row="1" column="5">
+   <item row="5" column="3">
     <widget class="QPushButton" name="pushSave">
      <property name="text">
       <string>Save</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="5">
-    <widget class="QPushButton" name="pushButton_2">
-     <property name="text">
-      <string>Quit</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>Root Foldder:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="1">
-    <widget class="QLineEdit" name="linePauseAudio"/>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="label_3">
-     <property name="text">
-      <string>Compilation Time:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Pause Audio:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="4">
-    <widget class="QPushButton" name="pushRoot">
-     <property name="text">
-      <string>Get Folder</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
+   <item row="5" column="1">
     <widget class="QLabel" name="labLength">
      <property name="frameShape">
       <enum>QFrame::Panel</enum>
@@ -82,20 +37,92 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="4">
+   <item row="7" column="2">
     <widget class="QPushButton" name="pushPause">
      <property name="text">
       <string>Get File</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="1">
+   <item row="6" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Root Foldder:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1">
     <widget class="QLineEdit" name="lineRoot"/>
    </item>
-   <item row="1" column="4">
+   <item row="0" column="3">
+    <widget class="QPushButton" name="pushItemUp">
+     <property name="text">
+      <string>&amp;Up</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Pause Audio:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" rowspan="5" colspan="3">
+    <widget class="QTreeView" name="treeView">
+     <property name="acceptDrops">
+      <bool>true</bool>
+     </property>
+     <property name="dragEnabled">
+      <bool>true</bool>
+     </property>
+     <attribute name="headerVisible">
+      <bool>true</bool>
+     </attribute>
+    </widget>
+   </item>
+   <item row="7" column="1">
+    <widget class="QLineEdit" name="linePauseAudio"/>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>Compilation Time:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="3">
+    <widget class="QPushButton" name="pushButton_2">
+     <property name="text">
+      <string>Quit</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="2">
     <widget class="QPushButton" name="pushClear">
      <property name="text">
       <string>Clear</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="2">
+    <widget class="QPushButton" name="pushRoot">
+     <property name="text">
+      <string>Get Folder</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="3">
+    <widget class="QPushButton" name="pushItemDown">
+     <property name="text">
+      <string>&amp;Down</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="3">
+    <widget class="QPushButton" name="pushItemDelete">
+     <property name="text">
+      <string>De&amp;lete</string>
      </property>
     </widget>
    </item>
