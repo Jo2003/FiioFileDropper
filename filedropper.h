@@ -110,6 +110,7 @@ private slots:
     void on_pushItemDelete_clicked();
     void on_pushItemUp_clicked();
     void on_pushItemDown_clicked();
+    void on_pushLoadM3u_clicked();
     /// @}
 
 private:

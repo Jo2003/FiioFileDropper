@@ -2,7 +2,9 @@
 #include "ui_filedropper.h"
 #include <QFileDialog>
 #include <QFile>
+#include <QDebug>
 #include <QMessageBox>
+#include <QTextStream>
 #include <QMimeData>
 #include <taglib/taglib.h>
 #include <taglib/fileref.h>
@@ -63,15 +65,17 @@ void FileDropper::on_pushSave_clicked()
         QFile toSave(save);
         if (toSave.open(QIODevice::Truncate|QIODevice::WriteOnly))
         {
+            bool started = false;
             for (const auto& a : mPlayList.keys())
             {
-                const auto& o = mPlayList.value(a).toObject();
-                toSave.write(o.value("url").toString().toUtf8() + "\n");
-
-                if (!ui->linePauseAudio->text().isEmpty())
+                if (!ui->linePauseAudio->text().isEmpty() && started)
                 {
                     toSave.write(fixFileUrl(QUrl(ui->linePauseAudio->text())).toUtf8() + "\n");
                 }
+
+                const auto& o = mPlayList.value(a).toObject();
+                toSave.write(o.value("url").toString().toUtf8() + "\n");
+                started = true;
             }
         }
     }
@@ -110,8 +114,6 @@ void FileDropper::dropEvent(QDropEvent *event)
         {
             if (mediaFileInfo(a, mediaInfo) == 0)
             {
-                ui->labLength->clear();
-
                 mPlayList.insert(QString("%1").arg(mPlayList.count() + 1, 3, 10, QChar('0')), mediaInfo);
 
                 QJsonDocument jdock(mPlayList);
@@ -310,6 +312,59 @@ void FileDropper::on_pushItemDown_clicked()
             mModel.loadJson(jdock.toJson());
             ui->treeView->expandAll();
             ui->treeView->scrollToBottom();
+            countTime();
+        }
+    }
+}
+
+void FileDropper::on_pushLoadM3u_clicked()
+{
+    QString open = QFileDialog::getOpenFileUrl(this,
+           tr("Open Playlist File"), QString(),
+           tr("Playlist Files (*.m3u *.m3u8);;All Files (*.*)")).toString();
+
+    if (!open.isEmpty())
+    {
+        // qDebug() << "Playlist file: " << open;
+
+        QFile m3u(QUrl(open).toLocalFile());
+
+        if (m3u.open(QIODevice::ReadOnly))
+        {
+            // qDebug() << "Playlist opened ...";
+            mPlayList = QJsonObject();
+            MediaInfo_t mediaInfo;
+
+            // read line by line
+            QTextStream in(&m3u);
+            while (!in.atEnd())
+            {
+                QString line = in.readLine();
+
+                if (!line.isEmpty())
+                {
+                    line.replace("\\", "/");
+                    line.replace(QString(FIIO_ROOT_PATH), ui->lineRoot->text());
+
+                    // qDebug() << line;
+
+                    if (line != ui->linePauseAudio->text())
+                    {
+                        if (mediaFileInfo(line, mediaInfo) == 0)
+                        {
+                            mPlayList.insert(QString("%1").arg(mPlayList.count() + 1, 3, 10, QChar('0')), mediaInfo);
+                        }
+                    }
+                }
+            }
+            m3u.close();
+
+            QJsonDocument jdock(mPlayList);
+
+            mModel.loadJson(jdock.toJson());
+            ui->treeView->expandAll();
+            ui->treeView->scrollToBottom();
+
             countTime();
         }
     }
